@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Livros</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        form { display: grid; gap: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        button { padding: 10px; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f9;
+            color: #333;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background: white;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+
+        form {
+            display: grid;
+            gap: 15px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e9ecef;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Cadastro de Livros - Laboratório de Storage, DOM e Ajax</h1>
+    <form id="livroForm">
+        <input type="text" id="titulo" placeholder="Título" required>
+        <input type="text" id="descricao" placeholder="Descrição" required>
+        <input type="text" id="genero" placeholder="Gênero" required>
+        <input type="text" id="autor" placeholder="Autor" required>
+        <button type="button" onclick="adicionarLivro()">Adicionar Livro</button>
+        <button type="button" onclick="enviarLivros()">Enviar Todos os Livros</button>
+    </form>
+
+    <table id="livrosTable">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Descrição</th>
+                <th>Gênero</th>
+                <th>Autor</th>
+            </tr>
+        </thead>
+        <tbody id="livrosBody"></tbody>
+    </table>
+
+    <script>
+        let livros = [];
+
+        function adicionarLivro() {
+            const titulo = document.getElementById('titulo').value;
+            const descricao = document.getElementById('descricao').value;
+            const genero = document.getElementById('genero').value;
+            const autor = document.getElementById('autor').value;
+
+            const livro = {
+                "titulo": titulo,
+                "descricao": descricao,
+                "genero": genero,
+                "autor": autor
+            };
+
+            livros.push(livro);
+            atualizarTabela();
+            limparFormulario();
+        }
+
+        function atualizarTabela() {
+            const tbody = document.getElementById('livrosBody');
+            tbody.innerHTML = '';
+            livros.forEach(livro => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${livro.titulo}</td>
+                    <td>${livro.descricao}</td>
+                    <td>${livro.genero}</td>
+                    <td>${livro.autor}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function limparFormulario() {
+            document.getElementById('titulo').value = '';
+            document.getElementById('descricao').value = '';
+            document.getElementById('genero').value = '';
+            document.getElementById('autor').value = '';
+        }
+
+        function enviarLivros() {
+            fetch('http://httpbin.org/post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(livros)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Livros enviados com sucesso!');
+                livros = [];
+                atualizarTabela();
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao enviar livros');
+            });
+        }
+    </script>
+</body>
+<footer>
+    <p>&copy; 2025 Lucas Pontes Lira. All rights reserved.</p>
+    <p>Made by Lucas Pontes Lira</p>
+</footer>
+</html>
